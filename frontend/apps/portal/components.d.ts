@@ -190,7 +190,6 @@ declare module 'vue' {
     Schemas: typeof import('./../../libs/portal/views/admin/schema/Schemas.vue')['default']
     Select: typeof import('./../../libs/shared/components/disco/Select.vue')['default']
     Snowflake: typeof import('./../../libs/shared/components/Snowflake.vue')['default']
-    SpdxTagDialog: typeof import('./../../libs/portal/components/dialog/SpdxTagDialog.vue')['default']
     Stack: typeof import('./../../libs/shared/layouts/Stack.vue')['default']
     Statistics: typeof import('./../../libs/portal/views/admin/tools/Statistics.vue')['default']
     Stats: typeof import('./../../libs/portal/views/analytics/Stats.vue')['default']

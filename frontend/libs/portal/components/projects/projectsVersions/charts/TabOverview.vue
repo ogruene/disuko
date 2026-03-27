@@ -4,14 +4,11 @@ import {PolicyState} from '@disclosure-portal/model/PolicyRule';
 import {ReviewRemarkLevel, ScanRemarkLevel} from '@disclosure-portal/model/Quality';
 import {
   ComponentStats,
-  GeneralStats,
   LicenseFamilyStats,
   LicenseRemarkStats,
   ReviewRemarkStats,
-  SbomStats,
   ScanRemarkStats,
 } from '@disclosure-portal/model/VersionDetails';
-import versionService from '@disclosure-portal/services/version';
 import {useProjectStore} from '@disclosure-portal/stores/project.store';
 import {useSbomStore} from '@disclosure-portal/stores/sbom.store';
 import {getColor, getColorRGB} from '@disclosure-portal/utils/Tools';
@@ -60,8 +57,6 @@ const projectModel = computed(() => useProjectStore().currentProject);
 const versionDetails = computed(() => sbomStore.getCurrentVersion);
 const spdxFileHistory = computed(() => sbomStore.getChannelSpdxs);
 const currentSpdx = computed(() => sbomStore.getSelectedSpdx);
-const sbomStats = ref<SbomStats>({} as SbomStats);
-const generalStats = ref<GeneralStats>({} as GeneralStats);
 const policyStateStats = ref<ComponentStats>({} as ComponentStats);
 const licenseFamilyStats = ref<LicenseFamilyStats>({} as LicenseFamilyStats);
 const reviewRemarksStats = ref<ReviewRemarkStats>({} as ReviewRemarkStats);
@@ -501,18 +496,19 @@ function openFilteredScanRemarks(event: ChartEvent, elements: ArcElement[]) {
 }
 
 async function loadChartData() {
-  const [sbomStatsData, generalStatsData] = await Promise.all([
-    versionService.getSBOMStats(projectModel.value._key, versionDetails.value._key, currentSpdx.value._key),
-    versionService.getGeneralVersionStats(projectModel.value._key, versionDetails.value._key),
+  await Promise.all([
+    sbomStore.fetchSBOMStats(currentSpdx.value._key),
+    sbomStore.fetchGeneralVersionStats(),
   ]);
-  sbomStats.value = sbomStatsData.data;
-  generalStats.value = generalStatsData.data;
 
-  policyStateStats.value = sbomStats.value.PolicyState;
-  licenseFamilyStats.value = sbomStats.value.LicenseFamily;
-  reviewRemarksStats.value = generalStats.value.ReviewRemark;
-  scanRemarkStats.value = sbomStats.value.ScanRemark;
-  licenseRemarkStats.value = sbomStats.value.LicenseRemark;
+  const sbomStatsData = sbomStore.getSbomStats;
+  const generalStatsData = sbomStore.getGeneralStats;
+
+  policyStateStats.value = sbomStatsData.PolicyState;
+  licenseFamilyStats.value = sbomStatsData.LicenseFamily;
+  reviewRemarksStats.value = generalStatsData.ReviewRemark;
+  scanRemarkStats.value = sbomStatsData.ScanRemark;
+  licenseRemarkStats.value = sbomStatsData.LicenseRemark;
   legendItemsReviewRemarks.value = generateLegend(chartDataReviewRemarks.value);
   legendItemsLicenseRemarks.value = generateLegend(chartDataLicenseRemarks.value);
   legendItemsScanRemarks.value = generateLegend(chartDataScanRemarks.value);

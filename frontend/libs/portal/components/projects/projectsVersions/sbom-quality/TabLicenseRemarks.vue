@@ -568,6 +568,5 @@ const downloadLicenseRemarksCsv = async () => {
       </template>
     </v-data-table>
 
-    <ComponentDetailsDialog ref="newComponentDetailsDlg"></ComponentDetailsDialog>
   </div>
 </template>

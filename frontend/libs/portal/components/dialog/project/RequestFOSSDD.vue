@@ -375,7 +375,7 @@ const doDialogAction = async () => {
   if (response) {
     await jobStore.pollJobStatus(projectModel.value._key, response.jobKey);
     isVisible.value = false;
-    dd.value?.open(projectModel.value._key, projectModel.value.name, response.approvalGuid);
+    dd.value?.open(response.approvalGuid);
   } else {
     idle.showIdle = false;
   }

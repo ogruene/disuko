@@ -129,31 +129,42 @@ const open = (newConf: DialogReviewRemarkConfig) => {
   isVisible.value = true;
 };
 
+const setupAfterSbomsLoaded = () => {
+  sbomsLoading.value = false;
+  if (!config.value.spdxID) {
+    return;
+  }
+  selectedSbom.value = sboms.value.find((sbom) => sbom._key === config.value.spdxID);
+  if (config.value.components && config.value.components.length) {
+    selectedComponents.value = [...config.value.components];
+  }
+  loadLicenses().then(() => {
+    if (config.value.licenses && config.value.licenses.length) {
+      selectedLicenses.value = config.value.licenses.map(
+        (presetLicense) => licenses.value.find((l) => l.licenseId === presetLicense.licenseId) || presetLicense,
+      );
+    }
+  });
+};
+
 const loadSboms = async () => {
   sbomsLoading.value = true;
-  versionService.getSbomHistory(projectModel.value._key, versionID.value).then((res) => {
-    const spdxFileHistory = res.data;
-    if (spdxFileHistory[0]) {
-      spdxFileHistory[0].isRecent = true;
-    }
-    sboms.value = spdxFileHistory;
-    sbomsLoading.value = false;
 
-    if (!config.value.spdxID) {
-      return;
-    }
-    selectedSbom.value = sboms.value.find((sbom) => sbom._key === config.value.spdxID);
-    if (config.value.components && config.value.components.length) {
-      selectedComponents.value = [...config.value.components];
-    }
-    loadLicenses().then(() => {
-      if (config.value.licenses && config.value.licenses.length) {
-        selectedLicenses.value = config.value.licenses.map(
-          (presetLicense) => licenses.value.find((l) => l.licenseId === presetLicense.licenseId) || presetLicense,
-        );
+  if (versionID.value === sbomStore.currentVersion._key) {
+    // Use cached channel history from the store
+    sboms.value = sbomStore.channelSpdxs;
+    setupAfterSbomsLoaded();
+  } else {
+    // Dialog opened for a different version — fall back to direct fetch
+    versionService.getSbomHistory(projectModel.value._key, versionID.value).then((res) => {
+      const spdxFileHistory = res.data;
+      if (spdxFileHistory[0]) {
+        spdxFileHistory[0].isRecent = true;
       }
+      sboms.value = spdxFileHistory;
+      setupAfterSbomsLoaded();
     });
-  });
+  }
 };
 
 const loadTemplates = () => {

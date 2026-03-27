@@ -207,11 +207,10 @@ const copyVersionToClipboard = (item: VersionSlim) => {
 const editVersion = (item: VersionSlim) => {
   versionDialog.value?.open({
     version: item,
-    projectID: currentProject.value._key,
   });
 };
 
-const getActionButtons = (item: VersionSlim): TableActionButtonsProps['buttons'] => {
+const getActionButtons = (): TableActionButtonsProps['buttons'] => {
   return [
     {
       icon: 'mdi-content-copy',
@@ -246,11 +245,7 @@ const getActionButtons = (item: VersionSlim): TableActionButtonsProps['buttons']
         :text="t('BTN_ADD')"
         icon="mdi-plus"
         :hint="maxVersionsReached ? t('TT_no_new_version') : t('TT_new_version')"
-        @clicked="
-          versionDialog?.open({
-            projectID: currentProject._key,
-          })
-        "
+        @clicked="versionDialog?.open({})"
         v-if="
           currentProject && currentProject.accessRights && currentProject.accessRights.allowProjectVersion.create
         " />

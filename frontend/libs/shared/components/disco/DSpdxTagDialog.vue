@@ -1,8 +1,6 @@
 <script lang="ts">
 import {Tags} from '@disclosure-portal/constants/ruleValidations';
-import {VersionSlim} from '@disclosure-portal/model/VersionDetails';
 import projectService from '@disclosure-portal/services/projects';
-import versionService from '@disclosure-portal/services/version';
 import {useProjectStore} from '@disclosure-portal/stores/project.store';
 import {useSbomStore} from '@disclosure-portal/stores/sbom.store';
 import useRules from '@disclosure-portal/utils/Rules';
@@ -73,13 +71,7 @@ export default defineComponent({
           await projectService.updateSpdxTag(projectModel.value._key, props.versionID, props.spdxID, tag.value);
           snack(t('DIALOG_SPDX_TAG_UPDATE_SUCCESS'));
           if (props.channelView) {
-            const spdxFileHistory = (
-              await versionService.getSbomHistory(projectModel.value._key, versionDetails.value._key)
-            ).data;
-            if (spdxFileHistory[0]) {
-              spdxFileHistory[0].isRecent = true;
-            }
-            sbomStore.setChannelSpdxs(spdxFileHistory);
+            await sbomStore.fetchSBOMHistory();
             await sbomStore.fetchAllSBOMs();
           } else {
             await sbomStore.fetchAllSBOMsFlat();
@@ -90,7 +82,6 @@ export default defineComponent({
       });
     };
     const projectModel = computed(() => projectStore.currentProject!);
-    const versionDetails = computed((): VersionSlim => sbomStore.getCurrentVersion);
 
     const activeRules = ref({
       tag: useRules().minMax(t('COL_SBOM_TAG'), Tags.TAG_MIN_LENGTH, Tags.TAG_MAX_LENGTH, false),

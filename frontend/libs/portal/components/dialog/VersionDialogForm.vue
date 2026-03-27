@@ -52,13 +52,13 @@ const doDialogAction = async () => {
     return;
   }
   if (config.value.version) {
-    await versionService.updateProjectVersion(config.value.projectID, config.value.version._key, req.value);
+    await versionService.updateProjectVersion(projectStore.currentProject!._key, config.value.version._key, req.value);
     snack(t('DIALOG_version_edit_success'));
   } else {
-    await versionService.createVersion(config.value.projectID, req.value);
+    await versionService.createVersion(projectStore.currentProject!._key, req.value);
     snack(t('DIALOG_version_create_success'));
   }
-  await projectStore.fetchProjectByKey(config.value.projectID);
+  await projectStore.fetchProjectByKey(projectStore.currentProject!._key);
   sbomStore.resetCurrentVersion();
   versionDialog.value?.reset();
   isVisible.value = false;

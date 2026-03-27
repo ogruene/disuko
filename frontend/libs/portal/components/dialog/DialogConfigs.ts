@@ -4,7 +4,6 @@ import {LicenseMeta, ReviewRemark} from '@disclosure-portal/model/Quality';
 import {ComponentInfoSlim, PolicyRuleStatus, VersionSlim} from '@disclosure-portal/model/VersionDetails';
 
 export interface DialogVersionFormConfig {
-  projectID: string;
   version?: VersionSlim;
 }
 export interface DialogReviewRemarkConfig {

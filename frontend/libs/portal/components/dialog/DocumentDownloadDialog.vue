@@ -15,11 +15,11 @@ const form = ref(null);
 const {t} = useI18n();
 const projectStore = useProjectStore();
 
-const open = (key: string, name: string, id: string) => {
+const open = (approvalGuid: string) => {
   show.value = true;
-  projectKey.value = key;
-  projectName.value = name;
-  appId.value = id;
+  projectKey.value = projectStore.currentProject!._key;
+  projectName.value = projectStore.currentProject!.name;
+  appId.value = approvalGuid;
 };
 
 const close = async () => {

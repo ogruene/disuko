@@ -44,12 +44,13 @@ export default defineComponent({
       comment: minMax(t('ATTR_COMMENT'), 0, 500, false),
     };
 
-    const open = (projectId: string, versionKey: string, spdxFileHistory: SpdxFile[], selectedSpdxKey: SpdxFile, approvableSpdxKey: string) => {
-      prId.value = projectId;
-      vId.value = versionKey;
-      sbomHistory.value = spdxFileHistory;
-      approvableSbomId.value = approvableSpdxKey;
-      selectedSBOM.value = selectedSpdxKey;
+    const open = () => {
+      const project = projectStore.currentProject!;
+      prId.value = project._key;
+      vId.value = sbomStore.currentVersion._key;
+      sbomHistory.value = sbomStore.channelSpdxs;
+      approvableSbomId.value = project.approvablespdx.spdxkey;
+      selectedSBOM.value = sbomStore.selectedSpdx;
       isVisible.value = true;
     };
 

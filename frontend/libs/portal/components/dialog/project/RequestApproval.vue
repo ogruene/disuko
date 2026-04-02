@@ -24,8 +24,10 @@ import dayjs from 'dayjs';
 import {computed, nextTick, ref, watch} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {VForm} from 'vuetify/components';
+import {useAppStore} from '@disclosure-portal/stores/app';
 
 const projectStore = useProjectStore();
+const appStore = useAppStore();
 const sbomStore = useSbomStore();
 const {longText} = useRules();
 const {t} = useI18n();
@@ -323,7 +325,7 @@ const doDialogAction = async () => {
           await jobStore.pollJobStatus(projectModel.value._key, response.jobKey);
           isVisible.value = false;
           snackbar.info(t('DIALOG_request_internal_approval_success'));
-          useAppStore().setShouldReloadApprovals(true);
+          appStore.setShouldReloadApprovals(true);
           if (!projectModel.value.isGroup) {
             await projectStore.fetchProjectByKey(projectModel.value._key);
           }

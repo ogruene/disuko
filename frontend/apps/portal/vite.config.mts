@@ -91,6 +91,7 @@ export default defineConfig(({mode}) => {
       oxlintPlugin({
         lintOnStart: false,
         failOnError: false,
+        quiet: true,
       }),
       tailwindcss(),
       generateTailwindColors(),

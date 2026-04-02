@@ -8,155 +8,175 @@ import {useRouter} from 'vue-router';
 
 type AccessChecker = () => boolean;
 
-export class RightsUtils {
-  static rights = function () {
-    // TODO: Risky to use store here, use a composable instead
-    const userStore = useUserStore();
-    return userStore.getRights;
-  };
-
-  static redirectNonAdmins = function () {
-    if (!RightsUtils.isAnyOfAdmin()) {
-      // TODO: Risky to use router here, use a composable instead
-      const router = useRouter();
-      router.replace({path: '/dashboard/home'}).finally();
-    }
-  };
-
-  static redirectRestrictedAccess = function (accessChecker: AccessChecker) {
-    if (!accessChecker()) {
-      // TODO: Risky to use router here, use a composable instead
-      const router = useRouter();
-      router.replace({path: '/dashboard/home'}).finally();
-    }
-  };
-
-  static redirectDisabledUser = function () {
-    // TODO: Risky to use router here, use a composable instead
-    const router = useRouter();
-    router.replace({path: '/dashboard'}).finally();
-  };
-
-  static hasLicenseAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return (
-      rights.allowLicense && (rights.allowLicense.create || rights.allowLicense.update || rights.allowLicense.delete)
-    );
-  };
-
-  static hasClassificationsAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return (
-      rights.allowObligation &&
-      (rights.allowObligation.create || rights.allowObligation.update || rights.allowObligation.delete)
-    );
-  };
-
-  static hasPolicyAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return rights.allowPolicy && (rights.allowPolicy.create || rights.allowPolicy.update || rights.allowPolicy.delete);
-  };
-
-  static hasAllProjectsReadonly = function (): boolean {
-    const rights = RightsUtils.rights();
-    return rights.allowProject && rights.allowProject.read;
-  };
-
-  static hasLabelAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return rights.allowLabel && (rights.allowLabel.create || rights.allowLabel.update || rights.allowLabel.delete);
-  };
-
-  static hasSchemaAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return rights.allowSchema && (rights.allowSchema.create || rights.allowSchema.update || rights.allowSchema.delete);
-  };
-
-  static hasToolsAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return rights.allowTools && (rights.allowTools.create || rights.allowTools.update || rights.allowTools.delete);
-  };
-
-  static hasSampleDataAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return (
-      rights.allowSampleData &&
-      (rights.allowSampleData.create || rights.allowSampleData.update || rights.allowSampleData.delete)
-    );
-  };
-
-  static hasStyleguideAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return (
-      rights.allowStyleguide &&
-      (rights.allowStyleguide.create || rights.allowStyleguide.update || rights.allowStyleguide.delete)
-    );
-  };
-
-  static hasUsersAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return (
-      rights.allowUsers &&
-      rights.allowUsers.create &&
-      rights.allowUsers.read &&
-      rights.allowUsers.update &&
-      rights.allowUsers.delete
-    );
-  };
-
-  static hasReviewTemplatesAccess = function (): boolean {
-    const rights = RightsUtils.rights();
-    return rights.hasReviewTemplatesAcces();
-  };
-
-  static isAnyOfAdmin = function (): boolean {
-    return (
-      RightsUtils.hasClassificationsAccess() ||
-      RightsUtils.hasPolicyAccess() ||
-      RightsUtils.hasAllProjectsReadonly() ||
-      RightsUtils.hasLabelAccess() ||
-      RightsUtils.hasSchemaAccess() ||
-      RightsUtils.hasToolsAccess() ||
-      RightsUtils.hasSampleDataAccess() ||
-      RightsUtils.hasStyleguideAccess() ||
-      RightsUtils.hasUsersAccess()
-    );
-  };
-
-  static hasRole = function (group: Group): boolean {
-    const rights = RightsUtils.rights();
-    return rights.groups.includes(group);
-  };
-
-  static isLicenseManager = (): boolean => {
-    return this.hasRole(Group.UserLicenseManager);
-  };
-
-  static isPolicyManager = (): boolean => {
-    return this.hasRole(Group.UserPolicyManager);
-  };
-
-  static isProjectAnalyst = (): boolean => {
-    return this.hasRole(Group.UserProjectAnalyst);
-  };
-
-  static isDomainAdmin = (): boolean => {
-    return this.hasRole(Group.UserDomainAdmin);
-  };
-
-  static isApplicationAdmin = (): boolean => {
-    return this.hasRole(Group.UserApplicationAdmin);
-  };
-
-  static isInternalUser = (): boolean => {
-    return this.hasRole(Group.UserInternal);
-  };
-
-  static isNonInternalUser = (): boolean => {
-    return this.hasRole(Group.UserNonInternal);
-  };
-
-  static isFOSSOffice = (): boolean => {
-    return this.hasRole(Group.UserFOSSOffice);
-  };
+export function rights() {
+  const userStore = useUserStore();
+  return userStore.getRights;
 }
+
+export function redirectNonAdmins() {
+  if (!isAnyOfAdmin()) {
+    const router = useRouter();
+    router.replace({path: '/dashboard/home'}).finally();
+  }
+}
+
+export function redirectRestrictedAccess(accessChecker: AccessChecker) {
+  if (!accessChecker()) {
+    const router = useRouter();
+    router.replace({path: '/dashboard/home'}).finally();
+  }
+}
+
+export function redirectDisabledUser() {
+  const router = useRouter();
+  router.replace({path: '/dashboard'}).finally();
+}
+
+export function hasLicenseAccess(): boolean {
+  const r = rights();
+  return r.allowLicense && (r.allowLicense.create || r.allowLicense.update || r.allowLicense.delete);
+}
+
+export function hasClassificationsAccess(): boolean {
+  const r = rights();
+  return (
+    r.allowObligation &&
+    (r.allowObligation.create || r.allowObligation.update || r.allowObligation.delete)
+  );
+}
+
+export function hasPolicyAccess(): boolean {
+  const r = rights();
+  return r.allowPolicy && (r.allowPolicy.create || r.allowPolicy.update || r.allowPolicy.delete);
+}
+
+export function hasAllProjectsReadonly(): boolean {
+  const r = rights();
+  return r.allowProject && r.allowProject.read;
+}
+
+export function hasLabelAccess(): boolean {
+  const r = rights();
+  return r.allowLabel && (r.allowLabel.create || r.allowLabel.update || r.allowLabel.delete);
+}
+
+export function hasSchemaAccess(): boolean {
+  const r = rights();
+  return r.allowSchema && (r.allowSchema.create || r.allowSchema.update || r.allowSchema.delete);
+}
+
+export function hasToolsAccess(): boolean {
+  const r = rights();
+  return r.allowTools && (r.allowTools.create || r.allowTools.update || r.allowTools.delete);
+}
+
+export function hasSampleDataAccess(): boolean {
+  const r = rights();
+  return (
+    r.allowSampleData &&
+    (r.allowSampleData.create || r.allowSampleData.update || r.allowSampleData.delete)
+  );
+}
+
+export function hasStyleguideAccess(): boolean {
+  const r = rights();
+  return (
+    r.allowStyleguide &&
+    (r.allowStyleguide.create || r.allowStyleguide.update || r.allowStyleguide.delete)
+  );
+}
+
+export function hasUsersAccess(): boolean {
+  const r = rights();
+  return (
+    r.allowUsers &&
+    r.allowUsers.create &&
+    r.allowUsers.read &&
+    r.allowUsers.update &&
+    r.allowUsers.delete
+  );
+}
+
+export function hasReviewTemplatesAccess(): boolean {
+  const r = rights();
+  return r.hasReviewTemplatesAcces();
+}
+
+export function isAnyOfAdmin(): boolean {
+  return (
+    hasClassificationsAccess() ||
+    hasPolicyAccess() ||
+    hasAllProjectsReadonly() ||
+    hasLabelAccess() ||
+    hasSchemaAccess() ||
+    hasToolsAccess() ||
+    hasSampleDataAccess() ||
+    hasStyleguideAccess() ||
+    hasUsersAccess()
+  );
+}
+
+export function hasRole(group: Group): boolean {
+  const r = rights();
+  return r.groups.includes(group);
+}
+
+export function isLicenseManager(): boolean {
+  return hasRole(Group.UserLicenseManager);
+}
+
+export function isPolicyManager(): boolean {
+  return hasRole(Group.UserPolicyManager);
+}
+
+export function isProjectAnalyst(): boolean {
+  return hasRole(Group.UserProjectAnalyst);
+}
+
+export function isDomainAdmin(): boolean {
+  return hasRole(Group.UserDomainAdmin);
+}
+
+export function isApplicationAdmin(): boolean {
+  return hasRole(Group.UserApplicationAdmin);
+}
+
+export function isInternalUser(): boolean {
+  return hasRole(Group.UserInternal);
+}
+
+export function isNonInternalUser(): boolean {
+  return hasRole(Group.UserNonInternal);
+}
+
+export function isFOSSOffice(): boolean {
+  return hasRole(Group.UserFOSSOffice);
+}
+
+export const RightsUtils = {
+  rights,
+  redirectNonAdmins,
+  redirectRestrictedAccess,
+  redirectDisabledUser,
+  hasLicenseAccess,
+  hasClassificationsAccess,
+  hasPolicyAccess,
+  hasAllProjectsReadonly,
+  hasLabelAccess,
+  hasSchemaAccess,
+  hasToolsAccess,
+  hasSampleDataAccess,
+  hasStyleguideAccess,
+  hasUsersAccess,
+  hasReviewTemplatesAccess,
+  isAnyOfAdmin,
+  hasRole,
+  isLicenseManager,
+  isPolicyManager,
+  isProjectAnalyst,
+  isDomainAdmin,
+  isApplicationAdmin,
+  isInternalUser,
+  isNonInternalUser,
+  isFOSSOffice,
+};

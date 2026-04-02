@@ -54,15 +54,16 @@ function getConfigPath(): string {
   return `${normalizedBase}/config.json`;
 }
 
+function getVersion() {
+  const style = ['color: white', 'background: green', 'font-size:14px', 'padding: 2px'].join(';');
+  console.info(`%c Build Date: ${import.meta.env.VITE_BUILD_DATE}`, style);
+  console.info(`%c Version: ${import.meta.env.VITE_VERSION}`, style);
+  console.info(`%c Commit: ${import.meta.env.VITE_COMMIT}`, style);
+  console.info(`%c NODE_ENV=production: ${import.meta.env.PROD}`, style);
+  console.info(`%c mode: ${import.meta.env.MODE}`, style);
+}
+
 export const setup = async () => {
-  function getVersion() {
-    const style = ['color: white', 'background: green', 'font-size:14px', 'padding: 2px'].join(';');
-    console.info(`%c Build Date: ${import.meta.env.VITE_BUILD_DATE}`, style);
-    console.info(`%c Version: ${import.meta.env.VITE_VERSION}`, style);
-    console.info(`%c Commit: ${import.meta.env.VITE_COMMIT}`, style);
-    console.info(`%c NODE_ENV=production: ${import.meta.env.PROD}`, style);
-    console.info(`%c mode: ${import.meta.env.MODE}`, style);
-  }
   // @ts-expect-error this adds getVersion() to the global window object so devs can see the version in the console
   window.getVersion = getVersion;
 

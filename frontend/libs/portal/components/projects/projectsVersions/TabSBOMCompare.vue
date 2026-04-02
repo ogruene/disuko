@@ -294,18 +294,20 @@ const filterOnLicenseMulti = (info: ComponentMultiDiff): boolean => {
   }
 };
 
+const checkMultipleLicenses = (comp: ComponentInfo): boolean =>
+  comp.licenseEffective.indexOf(' AND ') > 0 || comp.license.indexOf(' OR ') > 0;
+
 const hasMultipleLicense = (info: ComponentMultiDiff): boolean => {
-  const checkMultipleLicenses = (comp: ComponentInfo): boolean =>
-    comp.licenseEffective.indexOf(' AND ') > 0 || comp.license.indexOf(' OR ') > 0;
   return _.some(info.ComponentsNew, checkMultipleLicenses) || _.some(info.ComponentsOld, checkMultipleLicenses);
 };
 
+const multipleLicensesToArray = (comp: ComponentInfo): string[] =>
+  comp.licenseEffective
+    .replace('(', '')
+    .replace(')', '')
+    .split(/ OR | AND /);
+
 const separateMultipleLicenses = (info: ComponentMultiDiff): string[] => {
-  const multipleLicensesToArray = (comp: ComponentInfo): string[] =>
-    comp.licenseEffective
-      .replace('(', '')
-      .replace(')', '')
-      .split(/ OR | AND /);
   const licensesNew = info.ComponentsNew.flatMap(multipleLicensesToArray);
   const licensesOld = info.ComponentsOld.flatMap(multipleLicensesToArray);
   return _.union(licensesNew, licensesOld);

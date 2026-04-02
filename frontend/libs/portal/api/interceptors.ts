@@ -7,6 +7,17 @@ import {INotificationMeta} from '@disclosure-portal/model/IdleInfo';
 import eventBus from '@disclosure-portal/utils/eventbus';
 import {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 
+const tryParseRawError = (rawError: any) => {
+  try {
+    const start = rawError.indexOf('{"');
+    const end = rawError.indexOf('}');
+    const cleanJson = rawError.substring(start, end + 1);
+    return JSON.parse(cleanJson);
+  } catch {
+    return null;
+  }
+};
+
 export const initInterceptors = (axiosInstance: AxiosInstance) => {
   axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
@@ -120,17 +131,6 @@ export const initInterceptors = (axiosInstance: AxiosInstance) => {
       }
     }
     return null;
-  };
-
-  const tryParseRawError = (rawError: any) => {
-    try {
-      const start = rawError.indexOf('{"');
-      const end = rawError.indexOf('}');
-      const cleanJson = rawError.substring(start, end + 1);
-      return JSON.parse(cleanJson);
-    } catch {
-      return null;
-    }
   };
 
   const createErrorDetailsWithNoRaw = (errorDto: any, axiosErrorResponse: AxiosResponse): DHTTPError => {

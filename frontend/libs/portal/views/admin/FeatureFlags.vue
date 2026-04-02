@@ -20,14 +20,14 @@ interface FeatureFlag {
 
 const STORAGE_KEY = 'featureFlagOverrides';
 const ORIGINAL_VALUES_KEY = 'featureFlagOriginals';
-const EXCLUDED_KEYS = ['SERVER_URL', 'PUBLIC_API_ENDPOINT', 'OAUTH'];
+const EXCLUDED_KEYS = new Set(['SERVER_URL', 'PUBLIC_API_ENDPOINT', 'OAUTH']);
 
 const getOrInitializeOriginalValues = (): Record<string, boolean> => {
   const stored = sessionStorage.getItem(ORIGINAL_VALUES_KEY);
   if (stored) return JSON.parse(stored);
 
   const originalValues = Object.fromEntries(
-    Object.entries(config).filter(([key, value]) => typeof value === 'boolean' && !EXCLUDED_KEYS.includes(key)),
+    Object.entries(config).filter(([key, value]) => typeof value === 'boolean' && !EXCLUDED_KEYS.has(key)),
   ) as Record<string, boolean>;
 
   sessionStorage.setItem(ORIGINAL_VALUES_KEY, JSON.stringify(originalValues));

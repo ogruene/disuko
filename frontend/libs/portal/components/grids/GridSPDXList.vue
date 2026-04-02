@@ -15,6 +15,12 @@ import {DataTableHeader, DataTableItem} from '@shared/types/table';
 import {PropType, computed, defineComponent, ref} from 'vue';
 import {useI18n} from 'vue-i18n';
 
+const groupBy = () => {
+  const s = [];
+  s.push({key: 'projectKey'});
+  return s;
+};
+
 export default defineComponent({
   name: 'GridSPDXList',
   props: {
@@ -96,11 +102,6 @@ export default defineComponent({
       }
       const targetUrl = createVersionURL(approvable.projectKey, approvable.approvablespdx.versionkey);
       openUrlInNewTab(targetUrl);
-    };
-    const groupBy = () => {
-      const s = [];
-      s.push({key: 'projectKey'});
-      return s;
     };
 
     const isApproved = (approvable: ProjectApprovable) => {

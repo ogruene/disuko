@@ -9,6 +9,46 @@ import {fileURLToPath} from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const generateCSSColors = (colorsContent) => {
+  const cssColors = [];
+
+  const simpleColorRegex = /export const (\w+) = '(#[0-9A-Fa-f]{6})';/g;
+  let simpleMatch;
+
+  while ((simpleMatch = simpleColorRegex.exec(colorsContent)) !== null) {
+    const colorName = simpleMatch[1];
+    const hexValue = simpleMatch[2];
+    cssColors.push(`    --color-${colorName}: ${hexValue};`);
+  }
+
+  const colorScaleRegex = /export const (\w+) = \{([\s\S]*?)\};/g;
+  let match;
+
+  while ((match = colorScaleRegex.exec(colorsContent)) !== null) {
+    const colorName = match[1];
+    const scaleContent = match[2];
+
+    if (colorName === 'dataVisColors') continue;
+
+    const shadeRegex = /\[(\d+)\]:\s*['"]([#\w]+)['"]/g;
+    let shadeMatch;
+    const shades = [];
+
+    while ((shadeMatch = shadeRegex.exec(scaleContent)) !== null) {
+      shades.push({shade: shadeMatch[1], hex: shadeMatch[2]});
+    }
+
+    if (shades.length > 0) {
+      cssColors.push(`\n    /* ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} scale */`);
+      shades.forEach(({shade, hex}) => {
+        cssColors.push(`    --color-${colorName}-${shade}: ${hex};`);
+      });
+    }
+  }
+
+  return cssColors.join('\n');
+};
+
 /**
  * Vite plugin to auto-generate Tailwind CSS color definitions from Colors.ts
  * This ensures a single source of truth for all color definitions
@@ -16,46 +56,6 @@ const __dirname = path.dirname(__filename);
 export function generateTailwindColors() {
   const colorsFilePath = path.resolve(__dirname, './src/plugins/Colors.ts');
   const tailwindFilePath = path.resolve(__dirname, './src/styles/tailwind.css');
-
-  const generateCSSColors = (colorsContent) => {
-    const cssColors = [];
-
-    const simpleColorRegex = /export const (\w+) = '(#[0-9A-Fa-f]{6})';/g;
-    let simpleMatch;
-
-    while ((simpleMatch = simpleColorRegex.exec(colorsContent)) !== null) {
-      const colorName = simpleMatch[1];
-      const hexValue = simpleMatch[2];
-      cssColors.push(`    --color-${colorName}: ${hexValue};`);
-    }
-
-    const colorScaleRegex = /export const (\w+) = \{([\s\S]*?)\};/g;
-    let match;
-
-    while ((match = colorScaleRegex.exec(colorsContent)) !== null) {
-      const colorName = match[1];
-      const scaleContent = match[2];
-
-      if (colorName === 'dataVisColors') continue;
-
-      const shadeRegex = /\[(\d+)\]:\s*['"]([#\w]+)['"]/g;
-      let shadeMatch;
-      const shades = [];
-
-      while ((shadeMatch = shadeRegex.exec(scaleContent)) !== null) {
-        shades.push({shade: shadeMatch[1], hex: shadeMatch[2]});
-      }
-
-      if (shades.length > 0) {
-        cssColors.push(`\n    /* ${colorName.charAt(0).toUpperCase() + colorName.slice(1)} scale */`);
-        shades.forEach(({shade, hex}) => {
-          cssColors.push(`    --color-${colorName}-${shade}: ${hex};`);
-        });
-      }
-    }
-
-    return cssColors.join('\n');
-  };
 
   const updateTailwindCSS = () => {
     try {

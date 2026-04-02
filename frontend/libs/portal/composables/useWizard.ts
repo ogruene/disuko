@@ -4,13 +4,13 @@
 
 import {WizardCard} from '@disclosure-portal/model/Wizard';
 
+const toI18n = (title: string) => title.toUpperCase().replace(/ /g, '_').replace(/-/g, '_');
+
+const flipCard = (card: WizardCard) => {
+  card.isFlipped = !card.isFlipped;
+};
+
 export const useWizard = () => {
-  const toI18n = (title: string) => title.toUpperCase().replace(/ /g, '_').replace(/-/g, '_');
-
-  const flipCard = (card: WizardCard) => {
-    card.isFlipped = !card.isFlipped;
-  };
-
   return {
     toI18n,
     flipCard,

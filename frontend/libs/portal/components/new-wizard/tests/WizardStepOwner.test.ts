@@ -30,7 +30,7 @@ vi.mock('@disclosure-portal/composables/useNewWizard', () => ({
     mergeSteps: vi.fn(),
   }),
   isValidByRules: vi.fn((value: string) => !!value),
-  removeStep: vi.fn((steps: any[], stepId: string) => steps),
+  removeStep: vi.fn((steps: any[], _stepId: string) => steps),
 }));
 
 describe('WizardStepOwner', () => {

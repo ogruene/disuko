@@ -30,7 +30,7 @@ export const useLabelStore = defineStore('label', () => {
       description: '',
     };
     const foundLabel = state.labels.find((label) => label._key === key);
-    return foundLabel ? foundLabel : notFoundLabel;
+    return foundLabel ?? notFoundLabel;
   };
 
   const getLabelByNameAndType = (name: string, type: LabelType): Label | undefined => {

@@ -12,7 +12,7 @@ type Events = {
   'on-api-error': DHTTPError;
   'on-error': {error: ErrorDialogConfig};
   'on-idle': {idle: IdleInfo};
-  'window-resize': {};
+  'window-resize': Record<string, never>;
   'set-notification': {config: INotificationMeta};
   'tab-change': {tabIndex: number};
 };

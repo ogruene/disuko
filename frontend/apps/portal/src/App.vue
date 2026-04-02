@@ -48,7 +48,7 @@ const showDlgTos = ref(false);
 const errorDialog = ref();
 const dud = ref();
 
-const backendCodesRedirectToProjectList: string[] = [
+const backendCodesRedirectToProjectList = new Set([
   'ERROR_REPOSITORY_READ',
   'FIND_VERSION',
   'VERSION_DELETED',
@@ -57,9 +57,9 @@ const backendCodesRedirectToProjectList: string[] = [
   'PARAM_VERSION_EMPTY',
   'AAR',
   'TASK_NOT_FOUND',
-];
+]);
 
-const backendCodesRedirectToLicenseList: string[] = ['LICENSE_DATA_MISSING'];
+const backendCodesRedirectToLicenseList = new Set(['LICENSE_DATA_MISSING']);
 
 // Set up reactive page title based on route meta.title only
 watch(
@@ -82,11 +82,11 @@ const login = () => {
 };
 
 const onCloseErrorDialog = (error: ErrorDialogConfig) => {
-  if (backendCodesRedirectToProjectList.includes(error.titleKeyOrCode)) {
+  if (backendCodesRedirectToProjectList.has(error.titleKeyOrCode)) {
     router.push('/dashboard/home');
   }
 
-  if (backendCodesRedirectToLicenseList.includes(error.titleKeyOrCode)) {
+  if (backendCodesRedirectToLicenseList.has(error.titleKeyOrCode)) {
     router.push('/dashboard/licenses');
   }
 

@@ -46,6 +46,17 @@ class ComponentCompareDetails {
   }
 }
 
+const getCssClass = (data: {item: ComponentCompareDetails}): Record<string, any> => {
+  if (data.item.isDiff) {
+    return {
+      class: {
+        'diff-component': true,
+      },
+    };
+  }
+  return {};
+};
+
 export default defineComponent({
   components: {
     DCloseButton,
@@ -169,8 +180,8 @@ export default defineComponent({
       if (foundCurrentVersion || foundPreviousVersion) {
         const componentDiff = new ComponentDiff();
         componentDiff.DiffType = details.value.DiffType;
-        componentDiff.ComponentOld = foundPreviousVersion ? foundPreviousVersion : new ComponentInfo();
-        componentDiff.ComponentNew = foundCurrentVersion ? foundCurrentVersion : new ComponentInfo();
+        componentDiff.ComponentOld = foundPreviousVersion ?? new ComponentInfo();
+        componentDiff.ComponentNew = foundCurrentVersion ?? new ComponentInfo();
         if (details.value.Changes[`${selectedPreviousVersion.value}_${selectedCurrentVersion.value}`]) {
           const changes = details.value.Changes[`${selectedPreviousVersion.value}_${selectedCurrentVersion.value}`];
           componentDiff.SpdxId = changes.SpdxId;
@@ -343,16 +354,6 @@ export default defineComponent({
       }
     };
 
-    const getCssClass = (data: {item: ComponentCompareDetails}): Record<string, any> => {
-      if (data.item.isDiff) {
-        return {
-          class: {
-            'diff-component': true,
-          },
-        };
-      }
-      return {};
-    };
 
     const close = () => {
       show.value = false;

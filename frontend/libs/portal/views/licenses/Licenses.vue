@@ -444,21 +444,22 @@ const onClearFilter = async () => {
   await reload();
 };
 
+const filterAndMap = (
+  possibleItems: DataTableHeaderFilterItems[],
+  include: string[] = [],
+  exclude: string[] = [],
+) => {
+  return possibleItems
+    .filter((item) => {
+      const value = item.value;
+      const shouldInclude = include.includes(value);
+      const shouldExclude = exclude.includes(value) || exclude.length === 0;
+      return shouldInclude || !shouldExclude;
+    })
+    .map((item) => item.value);
+};
+
 const filterForCondition = (condition: FilterCondition) => {
-  const filterAndMap = (
-    possibleItems: DataTableHeaderFilterItems[],
-    include: string[] = [],
-    exclude: string[] = [],
-  ) => {
-    return possibleItems
-      .filter((item) => {
-        const value = item.value;
-        const shouldInclude = include.includes(value);
-        const shouldExclude = exclude.includes(value) || exclude.length === 0;
-        return shouldInclude || !shouldExclude;
-      })
-      .map((item) => item.value);
-  };
   switch (condition.field) {
     case 'isLicenseChart':
       selectedFilterIsLicenseChart.value = filterAndMap(possibleIsLicenseChart.value, condition.include);

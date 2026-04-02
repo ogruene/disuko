@@ -34,7 +34,7 @@ onMounted(() => {
     if (aIndex < 0) {
       tokens[idx].attrPush(['target', '_blank']);
     } else {
-      // @ts-expect-error
+      // @ts-expect-error -- attrs index access is valid at runtime but not in the type definition
       tokens[idx].attrs[aIndex][1] = '_blank';
     }
     return defaultRender(tokens, idx, options, env, self);

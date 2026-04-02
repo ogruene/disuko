@@ -112,7 +112,7 @@ declare const _default: import('vue').DefineComponent<
     accept: {
       type: StringConstructor;
     };
-    capture: {};
+      capture: string | boolean;
     disabled: {
       default: boolean;
     };
@@ -146,13 +146,13 @@ declare const _default: import('vue').DefineComponent<
       type: PropType<{
         [key: string]: any;
       }>;
-      default: () => {};
+      default: () => Record<string, unknown>;
     };
     data: {
       type: PropType<{
         [key: string]: any;
       }>;
-      default: () => {};
+      default: () => Record<string, unknown>;
     };
     timeout: {
       type: NumberConstructor;

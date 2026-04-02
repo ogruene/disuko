@@ -82,11 +82,11 @@ const isDragOver = ref(false);
 const convertImageToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.addEventListener('load', () => {
       const result = reader.result as string;
       resolve(result);
-    };
-    reader.onerror = () => reject(reader.error);
+    });
+    reader.addEventListener('error', () => reject(reader.error));
     reader.readAsDataURL(file);
   });
 };

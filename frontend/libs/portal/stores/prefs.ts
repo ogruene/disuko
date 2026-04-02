@@ -68,13 +68,14 @@ function cleanupPerm(perm: PermPrefs): boolean {
   return changed;
 }
 
+const dateReviver = (key: string, value: any) => {
+  if (typeof value === 'string' && key === 'expiry') {
+    return new Date(value);
+  }
+  return value;
+};
+
 const getPrefs = (): UiPrefs => {
-  const dateReviver = (key: string, value: any) => {
-    if (typeof value === 'string' && key === 'expiry') {
-      return new Date(value);
-    }
-    return value;
-  };
   const res = getDefaultPrefs();
   const permPrefs = localStorage.getItem(STORE_NAME);
   if (permPrefs) {

@@ -16,8 +16,7 @@ import {CodeDiff} from 'v-code-diff';
 import {defineComponent, onMounted, ref} from 'vue';
 import {useI18n} from 'vue-i18n';
 
-class DiffDetails {
-  public oldValue = '';
+class DiffDetails {  public oldValue = '';
   public newValue = '';
 
   constructor(oldValue: string, newValue: string) {
@@ -25,6 +24,10 @@ class DiffDetails {
     this.newValue = newValue;
   }
 }
+
+const formatPercentage = (license: LicenseWithSimilarity): string => {
+  return (license.similarity * 100).toFixed(2) + ' %';
+};
 
 export default defineComponent({
   name: 'LicenseCompareDialog',
@@ -176,9 +179,6 @@ export default defineComponent({
       await sendLicenseText();
     };
 
-    const formatPercentage = (license: LicenseWithSimilarity): string => {
-      return (license.similarity * 100).toFixed(2) + ' %';
-    };
 
     const onClickRow = (event: any, row: any) => {
       openUrlInNewTab('/dashboard/licenses/' + row.item.license.licenseId);

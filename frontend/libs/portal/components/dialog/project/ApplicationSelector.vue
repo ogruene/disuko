@@ -81,6 +81,10 @@ import _ from 'lodash';
 import {defineComponent, onMounted, PropType, ref, watch} from 'vue';
 import {useI18n} from 'vue-i18n';
 
+const getInputItemText = (item: Application): string => {
+  return item.name || '';
+};
+
 export default defineComponent({
   name: 'ApplicationSelector',
   props: {
@@ -172,9 +176,6 @@ export default defineComponent({
       return false;
     };
 
-    const getInputItemText = (item: Application): string => {
-      return item.name || '';
-    };
 
     return {
       t,

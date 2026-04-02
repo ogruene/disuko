@@ -160,8 +160,8 @@ const doDialogAction = async () => {
   item.value.licenseIds = selectedLicenses.value.filter((item) => !!item).map((item) => item.licenseId);
   item.value.classifications = selectedClassification.value.filter((item) => !!item).map((item) => item._key);
   item.value.componentNames = selectedCompNames.value.filter((item) => item !== null && item.length > 0) as string[];
-  item.value.targetTemplateKey = selectedTargetTemplate.value?._key!;
-  item.value.targetTemplateName = selectedTargetTemplate.value?.title!;
+  item.value.targetTemplateKey = selectedTargetTemplate.value!._key;
+  item.value.targetTemplateName = selectedTargetTemplate.value!.title;
 
   if (isEdit.value) {
     await checklistStore.editItem(item.value);

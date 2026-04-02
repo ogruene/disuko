@@ -30,7 +30,7 @@ const confirmText = ref('');
 const saving = ref(false);
 
 const rules = {
-  tid: [...minMax(t('COL_TID'), 4, 36, false), ...[(v: string) => !/[^A-Za-z0-9-]/.test(v) || t('MALFORMED_TID')]],
+  tid: [...minMax(t('COL_TID'), 4, 36, false), (v: string) => !/[^A-Za-z0-9-]/.test(v) || t('MALFORMED_TID')],
   name: minMax(t('NPV_DIALOG_TF_NAME'), 3, 80, false),
   description: longText(t('NP_DIALOG_TF_DESCRIPTION')),
   validURL: [(value: string) => !value || isURL(value) || t('VALIDATION_url')],

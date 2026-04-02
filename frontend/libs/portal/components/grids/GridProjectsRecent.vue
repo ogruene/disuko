@@ -79,7 +79,7 @@ const loaded = ref(false);
 const headers: any[] = [
   {
     title: t('COL_STATUS'),
-    text: '' + 'COL_STATUS',
+    text: 'COL_STATUS',
     sortable: true,
     filterable: true,
     value: 'status',
@@ -87,7 +87,7 @@ const headers: any[] = [
   },
   {
     title: t('COL_NAME'),
-    text: '' + 'COL_NAME',
+    text: 'COL_NAME',
     align: 'start',
     sortable: true,
     value: 'name',
@@ -95,7 +95,7 @@ const headers: any[] = [
   },
   {
     title: t('COL_UPDATED'),
-    text: '' + 'COL_UPDATED',
+    text: 'COL_UPDATED',
     align: 'start',
     sortable: true,
     width: 160,

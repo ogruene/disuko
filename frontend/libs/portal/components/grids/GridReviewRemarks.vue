@@ -272,9 +272,9 @@ const filterOnReviewRemarkLevel = () => {
 
 const reload = async (): Promise<void> => {
   loading.value = true;
-  const selectedKeys = selected.value.map((item) => item.key);
+  const selectedKeys = new Set(selected.value.map((item) => item.key));
   items.value = (await versionService.getReviewRemarks(projectModel.value._key, version.value._key)).data;
-  selected.value = items.value.filter((item) => selectedKeys.includes(item.key));
+  selected.value = items.value.filter((item) => selectedKeys.has(item.key));
   loading.value = false;
 };
 

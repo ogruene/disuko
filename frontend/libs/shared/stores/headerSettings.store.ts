@@ -124,10 +124,9 @@ export const useHeaderSettingsStore = defineStore(STORE_KEY, () => {
 
   const filteredHeaders = computed(() =>
     state[tableName.value]
-      ? [
-          ...selectedHeaders.value
-            .toSorted((a, b) => a - b)
-            .map((columnNumber) => {
+      ? selectedHeaders.value
+          .toSorted((a, b) => a - b)
+          .map((columnNumber) => {
               // This is needed so the tooltip can be translated instantly
               const tooltipObject = state?.[tableName.value]?.headers[columnNumber]?.tooltipText
                 ? {tooltipText: t(state[tableName.value].headers[columnNumber].tooltipText ?? '')}
@@ -149,8 +148,7 @@ export const useHeaderSettingsStore = defineStore(STORE_KEY, () => {
                 ...titleObject,
                 ...tooltipObject,
               } as DataTableHeader;
-            }),
-        ]
+            })
       : [],
   );
 

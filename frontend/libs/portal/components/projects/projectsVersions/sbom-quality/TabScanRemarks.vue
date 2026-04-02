@@ -433,11 +433,7 @@ const showDetails = async (event: Event, row: DataTableItem<ScanRemark>) => {
     row.item.spdxId,
   ).then((response) => {
     if (newComponentDetailsDlg.value) {
-      newComponentDetailsDlg.value?.open(
-        response.data,
-        row.item.policyRuleStatus,
-        row.item.unmatchedLicenses,
-      );
+      newComponentDetailsDlg.value?.open(response.data, row.item.policyRuleStatus, row.item.unmatchedLicenses);
     }
   });
 };

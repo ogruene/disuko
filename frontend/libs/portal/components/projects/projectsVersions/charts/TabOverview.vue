@@ -500,10 +500,7 @@ function openFilteredScanRemarks(event: ChartEvent, elements: ArcElement[]) {
 }
 
 async function loadChartData() {
-  await Promise.all([
-    sbomStore.fetchSBOMStats(currentSpdx.value._key),
-    sbomStore.fetchGeneralVersionStats(),
-  ]);
+  await Promise.all([sbomStore.fetchSBOMStats(currentSpdx.value._key), sbomStore.fetchGeneralVersionStats()]);
 
   const sbomStatsData = sbomStore.getSbomStats;
   const generalStatsData = sbomStore.getGeneralStats;

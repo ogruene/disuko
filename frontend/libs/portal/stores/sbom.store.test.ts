@@ -1,5 +1,10 @@
 import {createPinia, setActivePinia} from 'pinia';
-import {type GeneralStats, type SbomStats, type SpdxFile, type VersionSlim} from '@disclosure-portal/model/VersionDetails';
+import {
+  type GeneralStats,
+  type SbomStats,
+  type SpdxFile,
+  type VersionSlim,
+} from '@disclosure-portal/model/VersionDetails';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
 const {projectStoreMock, versionServiceMock, projectServiceMock} = vi.hoisted(() => ({
@@ -35,10 +40,10 @@ vi.mock('@disclosure-portal/services/projects', () => ({
 
 import {useSbomStore} from './sbom.store';
 
-const version = (key: string, name: string): VersionSlim => ({_key: key, name} as VersionSlim);
-const spdx = (key: string): SpdxFile => ({_key: key} as SpdxFile);
-const sbomStats = (allowed: number): SbomStats => ({PolicyState: {Allowed: allowed}} as SbomStats);
-const generalStats = (acceptable: number): GeneralStats => ({ReviewRemark: {Acceptable: acceptable}} as GeneralStats);
+const version = (key: string, name: string): VersionSlim => ({_key: key, name}) as VersionSlim;
+const spdx = (key: string): SpdxFile => ({_key: key}) as SpdxFile;
+const sbomStats = (allowed: number): SbomStats => ({PolicyState: {Allowed: allowed}}) as SbomStats;
+const generalStats = (acceptable: number): GeneralStats => ({ReviewRemark: {Acceptable: acceptable}}) as GeneralStats;
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -194,7 +199,3 @@ describe('useSbomStore', () => {
     expect(store.getGeneralStats).toEqual({ReviewRemark: {Acceptable: 7}});
   });
 });
-
-
-
-

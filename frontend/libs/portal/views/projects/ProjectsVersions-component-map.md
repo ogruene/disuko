@@ -4,6 +4,7 @@
 > Vuetify (`v-*`) and `@shared` components (e.g. `DCActionButton`, `DIconButton`, `TableLayout`, `DialogLayout`, `MenuItem`, `Tooltip`, `TableActionButtons`, etc.) are intentionally omitted.
 
 > **Legend**
+>
 > - 🏪 **Store-based** — all data read from Pinia stores; dialog can open without the parent passing anything
 > - 🔗 **Parent-dependent** — needs a specific selected item (e.g. a clicked row) not held in a shared store; must receive data from the parent
 > - ⚠️ **Partial** — create-mode is store-based, but edit/detail-mode is parent-dependent
@@ -15,24 +16,24 @@
 
 ### Header / toolbar components
 
-| Component | Description |
-|---|---|
+| Component     | Description                                                                  |
+| ------------- | ---------------------------------------------------------------------------- |
 | `ProjectMenu` | "More ▾" dropdown menu; slots used by parent to inject version-level actions |
 
 Menu items slotted in from `ProjectsVersions.vue`:
 
-| Slot action | What it triggers |
-|---|---|
+| Slot action      | What it triggers                    |
+| ---------------- | ----------------------------------- |
 | "Overall Review" | Opens `OverallReviewDialog` at root |
-| "Delete Version" | Opens `ConfirmationDialog` at root |
+| "Delete Version" | Opens `ConfirmationDialog` at root  |
 
 ### Dialogs at root level
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
-| `VersionDialogForm` | Edit version button | `version` is still passed via `open(config)`; `projectId` now read from `projectStore` directly | ⚠️ Partial — `projectID` was removed from config, but edit mode still depends on a passed `version` |
-| `ConfirmationDialog` | "Delete Version" action | Config uses `versionDetails._key` / `.name` from store | 🏪 Yes |
-| `OverallReviewDialog` | "Overall Review" action | Reads project key, version key, SBOM history, selected SBOM, approvable key — all from store inside `open()` | ✅ 🏪 Yes — `open()` now takes zero arguments |
+| Dialog                | Trigger                 | Dependency                                                                                                   | Can use shared state?                                                                               |
+| --------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `VersionDialogForm`   | Edit version button     | `version` is still passed via `open(config)`; `projectId` now read from `projectStore` directly              | ⚠️ Partial — `projectID` was removed from config, but edit mode still depends on a passed `version` |
+| `ConfirmationDialog`  | "Delete Version" action | Config uses `versionDetails._key` / `.name` from store                                                       | 🏪 Yes                                                                                              |
+| `OverallReviewDialog` | "Overall Review" action | Reads project key, version key, SBOM history, selected SBOM, approvable key — all from store inside `open()` | ✅ 🏪 Yes — `open()` now takes zero arguments                                                       |
 
 ---
 
@@ -42,13 +43,13 @@ Menu items slotted in from `ProjectsVersions.vue`:
 
 ### Dialogs inside `ProjectMenu`
 
-| Dialog | Dependency | Can use shared state? |
-|---|---|---|
-| `RequestFOSSDD` | Reads project / version / SBOM data from store internally | 🏪 Yes |
-| `RequestReview` | Reads project / version data from store internally | 🏪 Yes |
-| `RequestApproval` | Reads project / version data from store internally | 🏪 Yes |
-| `AddChildrenErrorDialog` | Reads current project from store | 🏪 Yes |
-| `ConfirmationDialog` | Config set reactively on `currentProject.deptMissing` | 🏪 Yes |
+| Dialog                   | Dependency                                                | Can use shared state? |
+| ------------------------ | --------------------------------------------------------- | --------------------- |
+| `RequestFOSSDD`          | Reads project / version / SBOM data from store internally | 🏪 Yes                |
+| `RequestReview`          | Reads project / version data from store internally        | 🏪 Yes                |
+| `RequestApproval`        | Reads project / version data from store internally        | 🏪 Yes                |
+| `AddChildrenErrorDialog` | Reads current project from store                          | 🏪 Yes                |
+| `ConfirmationDialog`     | Config set reactively on `currentProject.deptMissing`     | 🏪 Yes                |
 
 ---
 
@@ -58,11 +59,11 @@ Menu items slotted in from `ProjectsVersions.vue`:
 
 > Source: `components/projects/projectsVersions/charts/TabOverview.vue`
 
-| Component | Description |
-|---|---|
+| Component     | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
 | `ChartHeader` | Chart title + navigation link (local sub-component in `charts/`) |
-| `Bar` | Bar chart (`vue-chartjs`) |
-| `Doughnut` | Doughnut chart (`vue-chartjs`) |
+| `Bar`         | Bar chart (`vue-chartjs`)                                        |
+| `Doughnut`    | Doughnut chart (`vue-chartjs`)                                   |
 
 **No dialogs.** Chart clicks navigate to another tab via router.
 
@@ -74,18 +75,18 @@ Menu items slotted in from `ProjectsVersions.vue`:
 
 > Source: `components/projects/projectsVersions/TabComponentList.vue`
 
-| Component | Description |
-|---|---|
+| Component            | Description                                        |
+| -------------------- | -------------------------------------------------- |
 | `PolicyDecisionCell` | Renders the policy decision icon in each table row |
 
 #### Dialogs inside `TabComponentList`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
-| `ComponentDetailsDialog` | Row click | Needs fetched `ComponentDetails` plus row-derived policy/license context assembled by the parent | 🔗 Parent-dependent |
-| `LicenseRuleDialog` | Click license-rule icon in `showLicenseDecision` column | Needs `ComponentInfoSlim` + license ID from that row | 🔗 Parent-dependent |
-| `PolicyDecisionDialog` | `PolicyDecisionCell` emits `open-policy-decision` | Needs `ComponentInfoSlim` + `PolicyRuleStatus` from that row | 🔗 Parent-dependent |
-| `BulkPolicyDecisionsDialog` | "Bulk Policy Decision" button | Needs list of `DialogBulkPolicyDecisionEntry` computed from the filtered table | ⚠️ Partial — list could be moved to a store slice |
+| Dialog                      | Trigger                                                 | Dependency                                                                                       | Can use shared state?                             |
+| --------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| `ComponentDetailsDialog`    | Row click                                               | Needs fetched `ComponentDetails` plus row-derived policy/license context assembled by the parent | 🔗 Parent-dependent                               |
+| `LicenseRuleDialog`         | Click license-rule icon in `showLicenseDecision` column | Needs `ComponentInfoSlim` + license ID from that row                                             | 🔗 Parent-dependent                               |
+| `PolicyDecisionDialog`      | `PolicyDecisionCell` emits `open-policy-decision`       | Needs `ComponentInfoSlim` + `PolicyRuleStatus` from that row                                     | 🔗 Parent-dependent                               |
+| `BulkPolicyDecisionsDialog` | "Bulk Policy Decision" button                           | Needs list of `DialogBulkPolicyDecisionEntry` computed from the filtered table                   | ⚠️ Partial — list could be moved to a store slice |
 
 ---
 
@@ -108,11 +109,11 @@ No portal-specific UI components outside of dialogs.
 
 #### Dialogs inside `GridSBOM`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
-| `ReviewRemarkDialog` | "Add Remark" row action | Needs selected `SpdxFile` | 🔗 Parent-dependent |
-| `ConfirmationDialog` | "Delete" row action | Needs selected `SpdxFile` | 🔗 Parent-dependent |
-| `SbomValidationErrorsDialog` | SBOMs with validation errors | Needs validation error data from the selected SBOM | 🔗 Parent-dependent |
+| Dialog                       | Trigger                      | Dependency                                         | Can use shared state? |
+| ---------------------------- | ---------------------------- | -------------------------------------------------- | --------------------- |
+| `ReviewRemarkDialog`         | "Add Remark" row action      | Needs selected `SpdxFile`                          | 🔗 Parent-dependent   |
+| `ConfirmationDialog`         | "Delete" row action          | Needs selected `SpdxFile`                          | 🔗 Parent-dependent   |
+| `SbomValidationErrorsDialog` | SBOMs with validation errors | Needs validation error data from the selected SBOM | 🔗 Parent-dependent   |
 
 > **Note**: `GridSBOM.reloadSboms()` now delegates to `sbomStore.fetchSBOMHistory()` (✅ done). `SpdxTagDialog` (portal-specific duplicate) was deleted; `DSpdxTagDialog` from `@shared` is used instead (✅ done).
 
@@ -126,9 +127,9 @@ No portal-specific UI components outside of dialogs.
 
 #### Dialogs inside `TabSBOMCompare`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
-| `ComponentCompareDialog` | Row click on a component diff row | Needs `ComponentMultiDiff` data for that row | 🔗 Parent-dependent |
+| Dialog                   | Trigger                           | Dependency                                   | Can use shared state? |
+| ------------------------ | --------------------------------- | -------------------------------------------- | --------------------- |
+| `ComponentCompareDialog` | Row click on a component diff row | Needs `ComponentMultiDiff` data for that row | 🔗 Parent-dependent   |
 
 ---
 
@@ -138,12 +139,12 @@ No portal-specific UI components outside of dialogs.
 
 Container with four inner sub-tabs loaded dynamically via `defineAsyncComponent`.
 
-| Sub-tab ID | Component | Description |
-|---|---|---|
-| `scanRemarks` | `TabScanRemarks` | Scan remarks table |
-| `licenseRemarks` | `TabLicenseRemarks` | License remarks table |
-| `reviewRemarks` | `TabReviewRemarks` → `GridReviewRemarks` | Review remarks management |
-| `generalRemarks` | `TabGeneralRemarks` | Static i18n text only |
+| Sub-tab ID       | Component                                | Description               |
+| ---------------- | ---------------------------------------- | ------------------------- |
+| `scanRemarks`    | `TabScanRemarks`                         | Scan remarks table        |
+| `licenseRemarks` | `TabLicenseRemarks`                      | License remarks table     |
+| `reviewRemarks`  | `TabReviewRemarks` → `GridReviewRemarks` | Review remarks management |
+| `generalRemarks` | `TabGeneralRemarks`                      | Static i18n text only     |
 
 #### `TabScanRemarks`
 
@@ -172,16 +173,16 @@ No portal-specific UI components outside of dialogs.
 
 #### Dialogs inside `GridReviewRemarks`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
-| `ReviewRemarkDialog` | "Edit" row action | Needs selected `ReviewRemark` for pre-fill | 🔗 Parent-dependent |
-| `ConfirmationDialog` (close) | "Close" row action | Needs selected remark | 🔗 Parent-dependent |
-| `ConfirmationDialog` (cancel) | "Cancel" row action | Needs selected remark | 🔗 Parent-dependent |
-| `ConfirmationDialog` (reopen) | "Reopen" row action | Needs selected remark | 🔗 Parent-dependent |
-| `ConfirmationDialog` (bulk close) | "Close" bulk button (selected rows) | Needs selected remark list | 🔗 Parent-dependent |
-| `ConfirmationDialog` (bulk cancel) | "Cancel" bulk button (selected rows) | Needs selected remark list | 🔗 Parent-dependent |
-| `ReviewRemarksDetailsDialog` | "View" row action | Needs selected `ReviewRemark`; project/version UUID from store | 🔗 Parent-dependent (remark); 🏪 project/version from store |
-| `ChecklistExecuteDialog` | Dedicated **"Checklist" toolbar button** — passes `lists` (fetched checklist array) | Needs available checklist data loaded on mount | 🔗 Parent-dependent (checklist list passed via `open(lists)`) |
+| Dialog                             | Trigger                                                                             | Dependency                                                     | Can use shared state?                                         |
+| ---------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------- |
+| `ReviewRemarkDialog`               | "Edit" row action                                                                   | Needs selected `ReviewRemark` for pre-fill                     | 🔗 Parent-dependent                                           |
+| `ConfirmationDialog` (close)       | "Close" row action                                                                  | Needs selected remark                                          | 🔗 Parent-dependent                                           |
+| `ConfirmationDialog` (cancel)      | "Cancel" row action                                                                 | Needs selected remark                                          | 🔗 Parent-dependent                                           |
+| `ConfirmationDialog` (reopen)      | "Reopen" row action                                                                 | Needs selected remark                                          | 🔗 Parent-dependent                                           |
+| `ConfirmationDialog` (bulk close)  | "Close" bulk button (selected rows)                                                 | Needs selected remark list                                     | 🔗 Parent-dependent                                           |
+| `ConfirmationDialog` (bulk cancel) | "Cancel" bulk button (selected rows)                                                | Needs selected remark list                                     | 🔗 Parent-dependent                                           |
+| `ReviewRemarksDetailsDialog`       | "View" row action                                                                   | Needs selected `ReviewRemark`; project/version UUID from store | 🔗 Parent-dependent (remark); 🏪 project/version from store   |
+| `ChecklistExecuteDialog`           | Dedicated **"Checklist" toolbar button** — passes `lists` (fetched checklist array) | Needs available checklist data loaded on mount                 | 🔗 Parent-dependent (checklist list passed via `open(lists)`) |
 
 > ⚠️ **Correction from initial map**: `ChecklistExecuteDialog` is **not** triggered from `ReviewRemarksDetailsDialog` bulk-close. It is triggered directly by the "Checklist" toolbar button in `GridReviewRemarks`, which calls `executeDialog?.open(lists)`. The `@close-remark` event from `ReviewRemarksDetailsDialog` calls `openBulkCloseDialog()`, which opens a `ConfirmationDialog`.
 
@@ -203,10 +204,10 @@ No portal-specific UI components outside of dialogs.
 
 #### Dialogs inside `TabSourceCode`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
-| `ConfirmationDialog` | "Delete" row action | Needs selected source `_key` + URL | 🔗 Parent-dependent |
-| `NewExternalSourceDialog` | "Add" button (create) / "Edit" row action (edit) | Create: no item needed; Edit: needs selected `ExternalSource` | ⚠️ Partial |
+| Dialog                    | Trigger                                          | Dependency                                                    | Can use shared state? |
+| ------------------------- | ------------------------------------------------ | ------------------------------------------------------------- | --------------------- |
+| `ConfirmationDialog`      | "Delete" row action                              | Needs selected source `_key` + URL                            | 🔗 Parent-dependent   |
+| `NewExternalSourceDialog` | "Add" button (create) / "Edit" row action (edit) | Create: no item needed; Edit: needs selected `ExternalSource` | ⚠️ Partial            |
 
 ---
 
@@ -218,12 +219,13 @@ No portal-specific UI components outside of dialogs.
 
 #### Dialogs inside `TabOverallReviews`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
+| Dialog                | Trigger                     | Dependency                                                                                                        | Can use shared state?                         |
+| --------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | `OverallReviewDialog` | "Add Overall Review" button | Reads project key, version key, SBOM history, selected SBOM, approvable SBOM key — all from store inside `open()` | ✅ 🏪 Yes — `open()` now takes zero arguments |
-| `OverallAuditDialog` | "Add Audit" button | Same as above | ✅ 🏪 Yes — `open()` now takes zero arguments |
+| `OverallAuditDialog`  | "Add Audit" button          | Same as above                                                                                                     | ✅ 🏪 Yes — `open()` now takes zero arguments |
 
 > **Note**: `OverallReviewDialog` is instantiated **twice** in the component tree:
+>
 > 1. At root (`ProjectsVersions.vue`) — via the "Overall Review" slot action in `ProjectMenu`
 > 2. Inside `TabOverallReviews` — via the "Add" button within the tab
 >
@@ -235,14 +237,14 @@ No portal-specific UI components outside of dialogs.
 
 > Source: `components/projects/projectsVersions/TabNoticeFile.vue`
 
-| Component | Description |
-|---|---|
+| Component     | Description                                          |
+| ------------- | ---------------------------------------------------- |
 | `JsonViewer3` | JSON preview renderer (`vue-json-viewer`, 3rd-party) |
 
 #### Dialogs inside `TabNoticeFile`
 
-| Dialog | Trigger | Dependency | Can use shared state? |
-|---|---|---|---|
+| Dialog            | Trigger                         | Dependency                                                                              | Can use shared state?                   |
+| ----------------- | ------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------- |
 | `ProjectSettings` | "Edit 3rd Party Address" button | Calls `showDialog(currentProject.value)` — `currentProject` sourced from `projectStore` | 🏪 Yes — could read from store directly |
 
 ---
@@ -264,22 +266,22 @@ Thin wrapper — renders `GridAuditLog` with a `fetchMethod` prop. No portal-spe
 
 🔗 **Parent-dependent** — needs fetched `ComponentDetails` plus additional row-derived policy/license context passed via `open()`. Not held in any shared store.
 
-| Component | Description |
-|---|---|
+| Component              | Description                                    |
+| ---------------------- | ---------------------------------------------- |
 | `PolicyStatusTableRow` | Renders a policy status row (portal component) |
-| `JsonViewer3` | Raw SPDX data tab (`vue-json-viewer`) |
+| `JsonViewer3`          | Raw SPDX data tab (`vue-json-viewer`)          |
 
 #### Nested dialogs inside `ComponentDetailsDialog`
 
-| Dialog | Dependency | Can use shared state? |
-|---|---|---|
-| `ReviewRemarkDialog` | Needs selected `ReviewRemark` from the dialog's remark list | 🔗 Parent-dependent |
-| `LicenseRuleDialog` | Needs component + license from dialog context | 🔗 Parent-dependent |
-| `PolicyDecisionDialog` | Needs `PolicyRuleStatus` from the policy status table row | 🔗 Parent-dependent |
-| `ReviewRemarksDetailsDialog` | Needs selected `ReviewRemark` from the dialog's remark list | 🔗 Parent-dependent |
-| `ConfirmationDialog` (close remark) | Needs selected remark | 🔗 Parent-dependent |
-| `ConfirmationDialog` (cancel remark) | Needs selected remark | 🔗 Parent-dependent |
-| `ConfirmationDialog` (mark in-progress) | Needs selected remark | 🔗 Parent-dependent |
+| Dialog                                  | Dependency                                                  | Can use shared state? |
+| --------------------------------------- | ----------------------------------------------------------- | --------------------- |
+| `ReviewRemarkDialog`                    | Needs selected `ReviewRemark` from the dialog's remark list | 🔗 Parent-dependent   |
+| `LicenseRuleDialog`                     | Needs component + license from dialog context               | 🔗 Parent-dependent   |
+| `PolicyDecisionDialog`                  | Needs `PolicyRuleStatus` from the policy status table row   | 🔗 Parent-dependent   |
+| `ReviewRemarksDetailsDialog`            | Needs selected `ReviewRemark` from the dialog's remark list | 🔗 Parent-dependent   |
+| `ConfirmationDialog` (close remark)     | Needs selected remark                                       | 🔗 Parent-dependent   |
+| `ConfirmationDialog` (cancel remark)    | Needs selected remark                                       | 🔗 Parent-dependent   |
+| `ConfirmationDialog` (mark in-progress) | Needs selected remark                                       | 🔗 Parent-dependent   |
 
 ---
 
@@ -360,25 +362,25 @@ ProjectsVersions.vue
 
 ## Summary: Which dialogs can replace prop-passing with shared state?
 
-| Dialog | Current pattern | Status |
-|---|---|---|
-| `VersionDialogForm` | `open(config)` — `projectID` removed ✅; `version` still passed for edit mode | ⚠️ Partial — `ProjectsVersions.vue` could use `sbomStore.currentVersion`, but `GridVersions.vue` still opens create/edit for arbitrary rows |
-| `OverallReviewDialog` (×2) | `open()` — reads entirely from store | ✅ Done; root-level duplicate instance can be removed |
-| `OverallAuditDialog` | `open()` — reads entirely from store | ✅ Done |
-| `ProjectSettings` | `showDialog(currentProject)` — arg is from store | ⚠️ Could read from store directly |
-| `RequestFOSSDD` / `RequestReview` / `RequestApproval` | No args — reads store internally | 🏪 Already store-based |
-| `BulkPolicyDecisionsDialog` | Receives computed list from parent | ⚠️ List could be held in a dedicated store slice, but the current transient parent-computed list is also coherent |
-| `NewExternalSourceDialog` (create) | No item needed | 🏪 Store-based for create mode |
-| `NewExternalSourceDialog` (edit) | Receives selected `ExternalSource` | 🔗 Needs item; store-based only if selected item is stored |
-| `ComponentDetailsDialog` | Receives fetched `ComponentDetails` plus policy/license context from the parent | 🔗 Must remain parent-dependent unless both the selected row and the fetched detail payload move into shared state |
-| `LicenseRuleDialog` | Receives component + license | 🔗 Must remain parent-dependent |
-| `PolicyDecisionDialog` | Receives component + policy | 🔗 Must remain parent-dependent |
-| `ComponentCompareDialog` | Receives diff data for row | 🔗 Must remain parent-dependent |
-| `ReviewRemarkDialog` (edit) | Receives selected remark; SBOM history now from store cache ✅ | 🔗 Remark item must remain parent-dependent |
-| `ReviewRemarksDetailsDialog` | Receives selected remark | 🔗 Must remain parent-dependent |
-| `SbomValidationErrorsDialog` | Receives SBOM validation errors | 🔗 Must remain parent-dependent |
-| `ChecklistExecuteDialog` | Receives `lists` from `GridReviewRemarks` toolbar button | ⚠️ Lists could move to shared state, but `checklistsStore` would need new project-scoped/applicable-checklist state because it currently models admin checklist CRUD |
-| All `ConfirmationDialog` instances | Config set by parent per-action | 🔗 Must remain parent-dependent |
+| Dialog                                                | Current pattern                                                                 | Status                                                                                                                                                               |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VersionDialogForm`                                   | `open(config)` — `projectID` removed ✅; `version` still passed for edit mode   | ⚠️ Partial — `ProjectsVersions.vue` could use `sbomStore.currentVersion`, but `GridVersions.vue` still opens create/edit for arbitrary rows                          |
+| `OverallReviewDialog` (×2)                            | `open()` — reads entirely from store                                            | ✅ Done; root-level duplicate instance can be removed                                                                                                                |
+| `OverallAuditDialog`                                  | `open()` — reads entirely from store                                            | ✅ Done                                                                                                                                                              |
+| `ProjectSettings`                                     | `showDialog(currentProject)` — arg is from store                                | ⚠️ Could read from store directly                                                                                                                                    |
+| `RequestFOSSDD` / `RequestReview` / `RequestApproval` | No args — reads store internally                                                | 🏪 Already store-based                                                                                                                                               |
+| `BulkPolicyDecisionsDialog`                           | Receives computed list from parent                                              | ⚠️ List could be held in a dedicated store slice, but the current transient parent-computed list is also coherent                                                    |
+| `NewExternalSourceDialog` (create)                    | No item needed                                                                  | 🏪 Store-based for create mode                                                                                                                                       |
+| `NewExternalSourceDialog` (edit)                      | Receives selected `ExternalSource`                                              | 🔗 Needs item; store-based only if selected item is stored                                                                                                           |
+| `ComponentDetailsDialog`                              | Receives fetched `ComponentDetails` plus policy/license context from the parent | 🔗 Must remain parent-dependent unless both the selected row and the fetched detail payload move into shared state                                                   |
+| `LicenseRuleDialog`                                   | Receives component + license                                                    | 🔗 Must remain parent-dependent                                                                                                                                      |
+| `PolicyDecisionDialog`                                | Receives component + policy                                                     | 🔗 Must remain parent-dependent                                                                                                                                      |
+| `ComponentCompareDialog`                              | Receives diff data for row                                                      | 🔗 Must remain parent-dependent                                                                                                                                      |
+| `ReviewRemarkDialog` (edit)                           | Receives selected remark; SBOM history now from store cache ✅                  | 🔗 Remark item must remain parent-dependent                                                                                                                          |
+| `ReviewRemarksDetailsDialog`                          | Receives selected remark                                                        | 🔗 Must remain parent-dependent                                                                                                                                      |
+| `SbomValidationErrorsDialog`                          | Receives SBOM validation errors                                                 | 🔗 Must remain parent-dependent                                                                                                                                      |
+| `ChecklistExecuteDialog`                              | Receives `lists` from `GridReviewRemarks` toolbar button                        | ⚠️ Lists could move to shared state, but `checklistsStore` would need new project-scoped/applicable-checklist state because it currently models admin checklist CRUD |
+| All `ConfirmationDialog` instances                    | Config set by parent per-action                                                 | 🔗 Must remain parent-dependent                                                                                                                                      |
 
 ---
 
@@ -455,6 +457,7 @@ ProjectsVersions.vue
 #### 6. Co-locate SBOM-domain components under a `sbom/` module
 
 **Current state**: SBOM-related code is scattered across:
+
 - `components/grids/GridSBOM.vue` (692 lines)
 - `components/grids/GridReviewRemarks.vue` (716 lines)
 - `components/projects/projectsVersions/Tab*.vue`
@@ -465,6 +468,7 @@ ProjectsVersions.vue
 - `components/dialog/SbomValidationErrorsDialog.vue`
 
 **Proposed target structure**:
+
 ```
 libs/portal/
   sbom/
@@ -507,13 +511,13 @@ libs/portal/
 
 #### 7. Split oversized single-file components
 
-| File | Lines | Suggested split |
-|---|---|---|
-| `TabSBOMCompare.vue` | 999 | Extract `CompareToolbar`, `CompareFilters`, `CompareTable` sub-components |
-| `ComponentDetailsDialog.vue` | 863 | Extract `ComponentReviewRemarksPanel`, `ComponentPolicyStatusPanel` |
-| `TabComponentList.vue` | 782 | Extract `ComponentListFilters`, `ComponentListTable` |
-| `GridReviewRemarks.vue` | 716 | Extract `ReviewRemarksToolbar`, `ReviewRemarksTable` |
-| `GridSBOM.vue` | 692 | Extract `SbomUploadSection`, `SbomTable` |
+| File                         | Lines | Suggested split                                                           |
+| ---------------------------- | ----- | ------------------------------------------------------------------------- |
+| `TabSBOMCompare.vue`         | 999   | Extract `CompareToolbar`, `CompareFilters`, `CompareTable` sub-components |
+| `ComponentDetailsDialog.vue` | 863   | Extract `ComponentReviewRemarksPanel`, `ComponentPolicyStatusPanel`       |
+| `TabComponentList.vue`       | 782   | Extract `ComponentListFilters`, `ComponentListTable`                      |
+| `GridReviewRemarks.vue`      | 716   | Extract `ReviewRemarksToolbar`, `ReviewRemarksTable`                      |
+| `GridSBOM.vue`               | 692   | Extract `SbomUploadSection`, `SbomTable`                                  |
 
 ---
 

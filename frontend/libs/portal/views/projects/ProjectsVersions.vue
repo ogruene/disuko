@@ -109,11 +109,11 @@ const reload = async () => {
   if (currentProject.value?._key !== projectId.value) {
     await projectStore.fetchProjectByKey(projectId.value);
   }
-    if (!versionDetails.value || versionDetails.value._key !== versionKey.value) {
-      const vd = currentProject.value?.versions[versionKey.value] ?? '';
-      sbomStore.setCurrentVersion(vd);
-      await sbomStore.fetchSBOMHistory();
-    }
+  if (!versionDetails.value || versionDetails.value._key !== versionKey.value) {
+    const vd = currentProject.value?.versions[versionKey.value] ?? '';
+    sbomStore.setCurrentVersion(vd);
+    await sbomStore.fetchSBOMHistory();
+  }
   let selectedByRoute = false;
   if (spdxKey.value) {
     const sel = spdxFileHistory.value.find((spdx) => spdx._key === spdxKey.value);

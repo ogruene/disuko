@@ -567,6 +567,5 @@ const downloadLicenseRemarksCsv = async () => {
         </td>
       </template>
     </v-data-table>
-
   </div>
 </template>

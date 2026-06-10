@@ -8,6 +8,7 @@ import Icons from '@disclosure-portal/constants/icons';
 import {ProjectApprovable} from '@disclosure-portal/model/Approval';
 import {ApprovableDto} from '@disclosure-portal/model/Project';
 import {VersionSlim} from '@disclosure-portal/model/VersionDetails';
+import StatsItem from './StatsItem.vue';
 import {formatDateAndTime, getCssClassForTableRow, sbomOutdated} from '@disclosure-portal/utils/Table';
 import {createSBOMURL, createVersionURL} from '@shared/utils/apiUrls';
 import {DataTableHeader, DataTableItem} from '@shared/types/table';
@@ -17,6 +18,9 @@ import {openUrlInNewTab} from '@shared/utils/url';
 
 export default defineComponent({
   name: 'GridSPDXList',
+  components: {
+    StatsItem,
+  },
   props: {
     projects: {
       type: Array as PropType<ProjectApprovable[]>,
@@ -32,6 +36,10 @@ export default defineComponent({
       default: false,
     },
     doFilter: {
+      type: Boolean,
+      default: false,
+    },
+    showSupplier: {
       type: Boolean,
       default: false,
     },
@@ -57,20 +65,33 @@ export default defineComponent({
       emit('update:selectedProjects', selectedKeys);
     }
 
-    const headers: DataTableHeader[] = [
-      {
-        title: t('COL_APPROVABLE_SPDX'),
-        value: 'spdxname',
-        align: 'start',
-        width: 420,
-      },
-      {
-        title: t('COL_STATS'),
-        value: 'stats',
-        width: 250,
-      },
-      {title: '', key: 'data-table-group', align: 'start'},
-    ];
+    const headers = computed<DataTableHeader[]>(() => {
+      const tableHeaders: DataTableHeader[] = [
+        {
+          title: t('COL_APPROVABLE_SPDX'),
+          value: 'spdxname',
+          align: 'start',
+          width: 420,
+        },
+        {
+          title: t('COL_STATS'),
+          value: 'stats',
+          width: 250,
+        },
+      ];
+
+      if (props.showSupplier) {
+        tableHeaders.push({
+          title: t('COL_SUPPLIER'),
+          value: 'supplier',
+          align: 'start',
+          width: 250,
+        });
+      }
+
+      tableHeaders.push({title: '', key: 'data-table-group', align: 'start'});
+      return tableHeaders;
+    });
 
     const onRowClick = (event: Event, item: DataTableItem<ApprovableDto>) => {
       openSpdx(item.item);
@@ -187,7 +208,7 @@ export default defineComponent({
             if (!isGroupOpen(item)) toggleGroup(item);
           }
         "></template>
-      <th colspan="3" class="text-caption expand-header p-1 px-3 text-start">
+      <th :colspan="showSupplier ? 4 : 3" class="text-caption expand-header p-1 px-3 text-start">
         <span @click="openProject(item.items[0].raw.projectKey)" class="cursor-pointer">
           <span class="font-color-table">{{ t('PROJECT') }}:</span>
           {{ item.items[0].raw.projectName }}
@@ -216,7 +237,10 @@ export default defineComponent({
       <span v-if="item.spdxname == ''">{{ t('NO_APPROVABLE_SPDX') }}</span>
       <v-row class="align-center pl-2" v-else>
         <v-col cols="auto" class="pa-0">
-          <v-icon v-if="showSbomExtras" color="primary" size="small" class="pb-1">mdi-star</v-icon>
+          <v-icon v-if="showSbomExtras && item.isApprovable" color="primary" size="small" class="pb-1">mdi-star</v-icon>
+          <v-icon v-if="showSbomExtras && !item.isApprovable" color="primary" size="small" class="pb-1"
+            >mdi-star-outline</v-icon
+          >
         </v-col>
         <v-col cols="auto" class="pa-0">
           <v-icon v-if="isApproved(item)" color="green" size="small" class="ml-1 pb-1">
@@ -238,37 +262,34 @@ export default defineComponent({
         </v-col>
       </v-row>
     </template>
+    <template v-if="showSupplier" v-slot:[`item.supplier`]="{item}">
+      {{ item.supplier ? item.supplier : t('NO_SUPPLIER_INFORMATION') }}
+    </template>
     <template v-slot:[`item.stats`]="{item}">
       <div v-if="item.spdxname != ''">
         <div class="flex flex-row justify-between">
-          <div class="flex flex-col items-center justify-center">
-            <v-icon size="small">mdi-layers</v-icon>
-            <div class="text-no-wrap pt-1 text-center">{{ item.stats.total }}</div>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <v-icon size="small" :color="item.stats.denied > 0 ? 'policyStatusDeniedColor' : ''">
-              mdi-minus-circle
-            </v-icon>
-            <div class="pt-1 text-center">{{ item.stats.denied }}</div>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <v-icon size="small" :color="item.stats.noAssertion > 0 ? 'policyStatusUnassertedColor' : ''">
-              mdi-lightning-bolt-circle
-            </v-icon>
-            <div class="pt-1 text-center">{{ item.stats.noAssertion }}</div>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <v-icon size="small" :color="item.stats.warned > 0 ? 'policyStatusWarnedColor' : ''">mdi-alert</v-icon>
-            <div class="pt-1 text-center">{{ item.stats.warned }}</div>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <v-icon size="small" :color="item.stats.questioned > 0 ? 'green' : ''">mdi-help-circle</v-icon>
-            <div class="pt-1 text-center">{{ item.stats.questioned }}</div>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <v-icon size="small" :color="item.stats.allowed > 0 ? 'green' : ''">mdi-check-circle</v-icon>
-            <div class="text-no-wrap pt-1 text-center">{{ item.stats.allowed }}</div>
-          </div>
+          <StatsItem icon="mdi-layers" :value="item.stats.total" />
+          <StatsItem
+            icon="mdi-minus-circle"
+            :value="item.stats.denied"
+            :color="item.stats.denied > 0 ? 'policyStatusDeniedColor' : ''" />
+          <StatsItem
+            icon="mdi-lightning-bolt-circle"
+            :value="item.stats.noAssertion"
+            :color="item.stats.noAssertion > 0 ? 'policyStatusUnassertedColor' : ''" />
+          <StatsItem
+            icon="mdi-alert"
+            :value="item.stats.warned"
+            :color="item.stats.warned > 0 ? 'policyStatusWarnedColor' : ''" />
+          <StatsItem
+            icon="mdi-help-circle"
+            :value="item.stats.questioned"
+            :color="item.stats.questioned > 0 ? 'green' : ''" />
+          <StatsItem
+            icon="mdi-check-circle"
+            :value="item.stats.allowed"
+            :color="item.stats.allowed > 0 ? 'green' : ''"
+            nowrap />
         </div>
       </div>
     </template>

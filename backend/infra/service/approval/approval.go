@@ -160,11 +160,13 @@ func (s *ApprovalService) getApprovalInfo(targetProject *project.Project, projec
 		var sbomList *sbomlist.SbomList
 		var sbom *project.SpdxFileBase
 
-		if takeLatestSbom {
+		hasProjectApprovable := approvableSPDX.SpdxKey != "" && approvableSPDX.VersionKey != ""
+
+		if takeLatestSbom && !hasProjectApprovable {
 			approvableSPDX, sbomList, sbom = s.findLatestSpdx(pr)
 		}
 
-		if approvableSPDX.SpdxKey == "" || approvableSPDX.VersionKey == "" || (!includeNoFOSS && pr.IsNoFoss) {
+		if approvableSPDX.SpdxKey == "" || approvableSPDX.VersionKey == "" || (!takeLatestSbom && !includeNoFOSS && pr.IsNoFoss) {
 			res.Projects = append(res.Projects, approval.ProjectApprovable{
 				ProjectKey:      pr.Key,
 				ProjectName:     pr.Name,
@@ -174,7 +176,7 @@ func (s *ApprovalService) getApprovalInfo(targetProject *project.Project, projec
 			})
 			continue
 		}
-		if !takeLatestSbom {
+		if sbom == nil || sbomList == nil {
 			sbomList, sbom = s.SpdxRetriever.RetrieveSbomListAndFile(s.RequestSession, approvableSPDX.VersionKey, approvableSPDX.SpdxKey)
 		}
 		if sbom == nil || sbomList == nil {
@@ -240,6 +242,7 @@ func (s *ApprovalService) getApprovalInfo(targetProject *project.Project, projec
 			ApprovableStats: sbomStats,
 			SpdxUploaded:    sbom.Uploaded,
 			IsSpdxRecent:    isSpdxRecent,
+			IsApprovable:    hasProjectApprovable,
 		})
 	}
 	return res

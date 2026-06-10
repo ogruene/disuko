@@ -63,12 +63,17 @@ onMounted(async () => {
       <slot></slot>
     </template>
     <template #table>
-      <div ref="tableUserManagement" class="fill-height">
-        <div class="mb-2 flex flex-wrap items-center gap-2">
+      <div ref="tableUserManagement" class="flex h-full flex-col overflow-hidden">
+        <div class="mb-2 flex flex-shrink-0 flex-wrap items-center gap-2">
           <v-spacer></v-spacer>
           <DSearchField v-model="search" class="ml-auto" />
         </div>
-        <GridSPDXList :projects="filteredProjects" :channels="projectModel.versions" showSbomExtras showSupplier />
+        <GridSPDXList
+          class="flex-1 overflow-hidden"
+          :projects="filteredProjects"
+          :channels="projectModel.versions"
+          showSbomExtras
+          showSupplier />
       </div>
     </template>
   </TableLayout>

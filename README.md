@@ -6,6 +6,10 @@ The goal is to deliver a ready-to-run entry point with minimal setup effort.
 
 ---
 
+## New chapter
+
+---
+
 ## Features
 
 - Docker-based setup (via `docker-compose`)

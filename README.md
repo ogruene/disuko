@@ -6,7 +6,7 @@ The goal is to deliver a ready-to-run entry point with minimal setup effort.
 
 ---
 
-## Features
+## Super Features
 
 - Docker-based setup (via `docker-compose`)
 - Ready-to-run demo environment

@@ -16,6 +16,10 @@ The goal is to deliver a ready-to-run entry point with minimal setup effort.
 
 ---
 
+## Advanced Features
+
+---
+
 ## Quickstart
 
 Run the following command in the project root directory:

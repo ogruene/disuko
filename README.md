@@ -6,6 +6,14 @@ The goal is to deliver a ready-to-run entry point with minimal setup effort.
 
 ---
 
+## New chapter
+
+---
+
+## One more chapter
+
+---
+
 ## Features
 
 - Docker-based setup (via `docker-compose`)
@@ -13,6 +21,10 @@ The goal is to deliver a ready-to-run entry point with minimal setup effort.
 - Includes example users and credentials
 - Extendable for custom requirements
 - Supports SBOM (Software Bill of Materials) integration
+
+---
+
+## Advanced Features
 
 ---
 

@@ -6,6 +6,11 @@ The goal is to deliver a ready-to-run entry point with minimal setup effort.
 
 ---
 
+## Motivation
+Our motivation is, ...
+
+---
+
 ## Features
 
 - Docker-based setup (via `docker-compose`)

@@ -1,0 +1,37 @@
+name: ORT Scan Frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable-scanner:
+        description: 'Enable ORT scanner step'
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+    - chore/add-ort-scan-frontend
+jobs:
+  ort-scan:
+    runs-on: [ ubuntu-latest ]
+    name: Run ORT scan for frontend
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v6
+
+      - name: Run GitHub Action for ORT
+        uses: oss-review-toolkit/ort-ci-github-action@main
+        with:
+            project-path: frontend
+            allow-dynamic-versions: 'true'
+            log-level: 'debug'
+            ort-cli-args: '-P ort.analyzer.enabledPackageManagers=NPM,Yarn,Yarn2'
+            run: >
+              setup-node,
+              labels,
+              analyzer,
+              advisor,
+              ${{ github.event.inputs.enable-scanner == 'true' && 'scanner,' || '' }}
+              evaluator,
+              reporter,
+              upload-results

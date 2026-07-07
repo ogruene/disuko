@@ -22,7 +22,7 @@ jobs:
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@main
         with:
-            project-path: frontend
+            project-path: ${{ github.workspace }}/frontend
             allow-dynamic-versions: 'true'
             log-level: 'debug'
             ort-cli-args: '-P ort.analyzer.enabledPackageManagers=NPM,Yarn,Yarn2'

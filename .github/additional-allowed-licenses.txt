@@ -1,0 +1,1 @@
+LicenseRef-scancode-google-patent-license-golang

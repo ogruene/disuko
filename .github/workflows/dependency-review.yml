@@ -22,10 +22,21 @@ jobs:
             | jq -r '[(.approved, .valid) | keys[]] | join(",")' \
             | sed 's/UNLICENSE/Unlicense/g')
           echo "list=${LICENSES}" >> "$GITHUB_OUTPUT"
+      - name: 'Add Additional Allowed Licenses'
+        id: additional-allowed-licenses
+        run: |
+          EXTRA=$(grep -v '^\s*$' .github/additional-allowed-licenses.txt | paste -sd ',')
+          BASE="${{ steps.eclipse-licenses.outputs.list }}"
+          if [ -n "$EXTRA" ]; then
+            COMBINED="${BASE},${EXTRA}"
+          else
+            COMBINED="${BASE}"
+          fi
+          echo "list=${COMBINED}" >> "$GITHUB_OUTPUT"
       - name: 'Dependency Review'
         uses: ogruene/dependency-review-action@feat/fail-on-unknown-license
         with:
-          allow-licenses: ${{ steps.eclipse-licenses.outputs.list }}
+          allow-licenses: ${{ steps.additional-allowed-licenses.outputs.list }}
           comment-summary-in-pr: always
           show-patched-versions: true
           fail-on-unknown-license: false

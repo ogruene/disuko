@@ -27,4 +27,4 @@ jobs:
           allow-licenses: ${{ steps.eclipse-licenses.outputs.list }}
           comment-summary-in-pr: always
           show-patched-versions: true
-          fail-on-unknown-license: false
+          fail-on-unknown-license: true
